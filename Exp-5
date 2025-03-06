@@ -1,0 +1,59 @@
+import java.io.*;
+import java.util.*;
+
+// Student class implements Serializable
+class Student implements Serializable {
+    private static final long serialVersionUID = 1L;
+    String name;
+    int age;
+    Double marks; // Autoboxing for double
+
+    public Student(String name, int age, Double marks) {
+        this.name = name;
+        this.age = age;
+        this.marks = marks;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{name='" + name + "', age=" + age + ", marks=" + marks + "}";
+    }
+}
+
+public class DataHandling {
+    public static void main(String[] args) {
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("Aman", 20, 85.5));
+        students.add(new Student("Rahul", 21, 78.0));
+        students.add(new Student("Priya", 19, 92.3));
+
+        String filename = "students.dat";
+        
+        // Serialize the student list
+        serializeStudents(students, filename);
+        
+        // Deserialize and display students
+        List<Student> deserializedStudents = deserializeStudents(filename);
+        System.out.println("Deserialized Students: " + deserializedStudents);
+    }
+    
+    // Method to serialize students
+    public static void serializeStudents(List<Student> students, String filename) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+            oos.writeObject(students);
+            System.out.println("Serialization successful!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // Method to deserialize students
+    public static List<Student> deserializeStudents(String filename) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+            return (List<Student>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+}
